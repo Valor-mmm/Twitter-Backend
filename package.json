@@ -1,0 +1,16 @@
+{
+  "name": "twitter-backend",
+  "version": "1.0.0",
+  "description": "Simple twitter copy for nodeJs course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Twitter",
+    "NodeJS",
+    "Backend"
+  ],
+  "author": "Valor",
+  "license": "ISC"
+}
