@@ -14,7 +14,8 @@
   "author": "Valor",
   "license": "ISC",
   "dependencies": {
-    "hapi": "^17.2.0"
+    "hapi": "^17.2.0",
+    "simple-node-logger": "^0.93.33"
   },
   "devDependencies": {
     "eslint": "^4.13.1"
