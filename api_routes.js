@@ -1,6 +1,10 @@
+const corsOption = {
+  cors: true
+};
+
 const apiRoutes = [
 
-  //{method: , path: , handler: }
+  //{method: , path: , handler: , options: corsOption}
 
 ];
 
