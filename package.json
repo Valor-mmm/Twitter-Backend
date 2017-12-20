@@ -12,5 +12,8 @@
     "Backend"
   ],
   "author": "Valor",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "hapi": "^17.2.0"
+  }
 }
