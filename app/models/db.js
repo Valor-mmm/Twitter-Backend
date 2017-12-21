@@ -16,6 +16,7 @@ const dbConnection = mongoose.connection;
 
 dbConnection.on('connected', () => {
   logger.info(`Connected to mongoDB database at: ${dbURI}`);
+  seedDB();
 });
 
 dbConnection.on('error', (error) => {
@@ -25,3 +26,20 @@ dbConnection.on('error', (error) => {
 dbConnection.on('disconnected', () => {
   logger.warn(`Disconnected from database at: ${dbURI}`);
 });
+
+const seedDB = async function() {
+  if (process.env.NODE_ENV !== 'production') {
+    const seeder = require('mongoose-seeder');
+    const data = dbConfig.seedData;
+
+    // eslint-disable-next-line no-unused-vars
+    const User = require('./user/user');
+
+    try {
+      const seededData = await seeder.seed(data, {dropDatabase: false, dropCollections: true});
+      logger.info('Data seeded to DB', seededData);
+    } catch(error) {
+      logger.error('Could not seed data.' , error);
+    }
+  }
+};
