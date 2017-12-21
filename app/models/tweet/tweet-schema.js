@@ -17,6 +17,8 @@ const tweetSchema = mongoose.Schema({
     ref: userSchema
   },
   upvotes: Number
+}, {
+  timestamps: true
 });
 
 module.exports = tweetSchema;
