@@ -1,0 +1,6 @@
+{
+  "dbConnURL": "mongodb://localhost/twitter",
+  "dataFixtures": [
+
+  ]
+}
