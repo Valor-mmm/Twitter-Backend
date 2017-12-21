@@ -17,6 +17,7 @@
     "bcrypt": "^1.0.3",
     "hapi": "^17.2.0",
     "mongoose": "^4.13.7",
+    "mongoose-seeder": "^1.2.1",
     "simple-node-logger": "^0.93.33"
   },
   "devDependencies": {
