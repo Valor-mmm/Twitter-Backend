@@ -34,6 +34,10 @@ const seedDB = async function() {
 
     // eslint-disable-next-line no-unused-vars
     const User = require('./user/user');
+    // eslint-disable-next-line no-unused-vars
+    const Tweet = require('./tweet/tweet');
+    // eslint-disable-next-line no-unused-vars
+    const Admin = require('./admin/admin');
 
     try {
       const seededData = await seeder.seed(data, {dropDatabase: false, dropCollections: true});

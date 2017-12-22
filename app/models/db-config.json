@@ -1,6 +1,62 @@
 {
   "dbConnURL": "mongodb://localhost/twitter",
-  "dataFixtures": [
-
-  ]
+  "seedData": {
+    "users": {
+      "_model": "User",
+      "Deadpool": {
+        "username": "ponylover12",
+        "password": "francis",
+        "tweets": [
+        ],
+        "firstName": "Dead",
+        "lastName": "Pool",
+        "email": "maximum.effort@dp.com",
+        "following": [
+        ]
+      },
+      "KimUnTrump": {
+        "username": "kimUnTrump",
+        "password": "iAmTheBest",
+        "tweets": [
+        ],
+        "firstName": "Kim-Un",
+        "lastName": "Trump",
+        "email": "theRealUnTrump@gtbtp.com",
+        "following": [
+          "->users.Deadpool"
+        ]
+      }
+    },
+    "tweets": {
+      "_model": "Tweet",
+      "firstTweet": {
+        "content": "This is the first tweet ever!! Greatest tweet!",
+        "poster": "->users.KimUnTrump",
+        "upvotes": 5
+      },
+      "secondTweet": {
+        "content": "Make Me Great again!!",
+        "poster": "->users.KimUnTrump",
+        "upvotes": 2
+      },
+      "thirdTweet": {
+        "content": "F*** Francis!",
+        "poster": "->users.Deadpool",
+        "upvotes": 100
+      },
+      "fouthTweet": {
+        "content": "Maximum Effort",
+        "poster": "->users.Deadpool",
+        "upvotes": 89
+      }
+    },
+    "admins": {
+      "_model": "Admin",
+      "MasterAdmin3000": {
+        "email": "ad@min.com",
+        "username": "master_admin",
+        "password": "supersecure"
+      }
+    }
+  }
 }
