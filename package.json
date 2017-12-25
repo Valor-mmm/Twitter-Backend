@@ -16,12 +16,15 @@
   "dependencies": {
     "bcrypt": "^1.0.3",
     "boom": "^7.1.1",
+    "chai": "^4.1.2",
     "hapi": "^17.2.0",
     "joi": "^13.0.2",
     "lodash": "^4.17.4",
+    "mocha": "^4.0.1",
     "mongoose": "^4.13.7",
     "mongoose-seeder": "^1.2.1",
-    "simple-node-logger": "^0.93.33"
+    "simple-node-logger": "^0.93.33",
+    "sync-request": "^4.1.0"
   },
   "devDependencies": {
     "eslint": "^4.13.1"
