@@ -38,7 +38,7 @@ const create = {
 const getOne = {
   auth: false,
 
-  validate: validationUtils.getIdParamsValidation(),
+  // TODO add validation:validate: validationUtils.getIdParamsValidation(),
 
   handler: (request, h) => {
     return apiUtils.findById(modelName, User, request.params.id);
@@ -48,14 +48,17 @@ const getOne = {
 const getSomeById = {
   auth: false,
 
-  validate: validationUtils.getIdArrayValidation(),
+  // TODO add validation: validate: validationUtils.getIdArrayValidation(),
 
   handler: (request, h) => {
-    const constraints = {
-      _id: {$in: request.payload.ids}
-    };
+    let constraints;
+    if (request.query.ids) {
+      constraints = {
+        _id: {$in: request.query.ids}
+      };
+    }
 
-    return apiUtils.find(modelName, User, constraints);
+    return apiUtils.find(modelName, User, constraints ? constraints : null);
   }
 };
 

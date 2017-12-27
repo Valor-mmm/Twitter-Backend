@@ -4,7 +4,7 @@ const Joi = require('joi');
 const Boom = require('boom');
 
 const getIdSchema = () => {
-  return Joi.string().regex(/^[a-f\\d]{24}$/i);
+  return Joi.string();// TODO find fitting regex .regex(/^[a-fA-F/d]{24}$/);
 };
 
 
