@@ -16,8 +16,8 @@ const securityOption = {
 };
 
 const getOptions = (specificOptions) => {
-  const secureCorsOption = _.merge(corsOption, securityOption);
-  return _.merge(secureCorsOption, specificOptions);
+  const result = _.merge(_.clone(corsOption), securityOption, specificOptions);
+  return result;
 };
 
 const getPath = (path, id) => {
