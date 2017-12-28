@@ -4,11 +4,22 @@ const logger = require('simple-node-logger').createSimpleLogger();
 const _ = require('lodash');
 const assert = require('chai').assert;
 
+const CrudService = require('./crud-service');
+
 class CrudTester {
 
-  constructor(crudService, fixture) {
-    this.crudService = crudService;
+  constructor(fixture) {
+    CrudTester.validateFixture(fixture);
+    this.crudService = new CrudService(fixture.baseUrl, fixture.apiUrl);
     this.fixture = fixture;
+  }
+
+  static validateFixture(fixture) {
+    assert.isDefined(fixture.baseUrl);
+    assert.isDefined(fixture.apiUrl);
+    assert.isDefined(fixture.singleObject);
+    assert.isDefined(fixture.objectList);
+    assert.isDefined(fixture.changedAttributes);
   }
 
   static validateObject(actual, expected) {
@@ -17,7 +28,7 @@ class CrudTester {
   }
 
   static validateID(actualObject, expectedId) {
-    assert._isDefined(actualObject._id);
+    assert.isDefined(actualObject._id);
     assert.strictEqual(actualObject._id, expectedId);
   }
 
@@ -63,7 +74,7 @@ class CrudTester {
     return this.create(obj);
   }
 
-  createMany() {
+  createSome() {
     const objects = this.getObjectList();
     const result = [];
     for (const obj of objects) {
@@ -75,7 +86,7 @@ class CrudTester {
   createAll() {
     const result = [];
     result.push(this.createOne());
-    result.concat(this.createMany());
+    result.concat(this.createSome());
     return result;
   }
 
@@ -90,7 +101,7 @@ class CrudTester {
 
   getByObject(obj) {
     const id = CrudTester.getIdOfObject(obj);
-    const result = this.getOneById(id);
+    const result = this.getById(id);
     CrudTester.validateObject(result, obj);
     return result;
   }
@@ -118,7 +129,7 @@ class CrudTester {
 
     if (objectArr) {
       idArr = [];
-      for (const obj in objectArr) {
+      for (const obj of objectArr) {
         idArr.push(CrudTester.getIdOfObject(obj));
       }
     }
@@ -133,12 +144,12 @@ class CrudTester {
   }
 
   getOne() {
-    const obj = this.getSingleObject();
+    const obj = this.createOne();
     return this.getByObject(obj);
   }
 
   getSome() {
-    const objects = this.getObjectList();
+    const objects = this.createSome();
     const byArrayResult = this.getByObjectArray(objects);
 
     const byOneByOneResult = [];
@@ -160,6 +171,8 @@ class CrudTester {
 
   static validateChangedObject(actual, changedAttr, previous) {
     const expectedObj = _.merge(_.clone(previous), changedAttr);
+    delete expectedObj.createdAt;
+    delete expectedObj.updatedAt;
     CrudTester.validateObject(actual, expectedObj);
   }
 
@@ -179,13 +192,13 @@ class CrudTester {
   }
 
   changeOne() {
-    const object = this.getSingleObject();
+    const object = this.createOne();
     const changedAttr = this.fixture.changedAttributes;
     return this.changeByObject(object, changedAttr);
   }
 
   changeSome() {
-    const objectList = this.getObjectList();
+    const objectList = this.createSome();
     const changedAttr = this.fixture.changedAttributes;
     const result = [];
 
@@ -242,12 +255,12 @@ class CrudTester {
   }
   
   deleteOne() {
-    const obj = this.getSingleObject();
+    const obj = this.createOne();
     return this.deleteByObj(obj);
   }
 
   deleteSome() {
-    const objects = this.getObjectList();
+    const objects = this.createSome();
     return this.deleteByObjArray(objects);
   }
 

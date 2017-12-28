@@ -4,6 +4,14 @@ const HttpService = require('./sync-http-service');
 
 class CrudService {
 
+  static getQueryIdsObject(ids) {
+    let queryObject = null;
+    if (ids) {
+      queryObject= {ids: ids};
+    }
+    return queryObject;
+  }
+
   constructor(baseUrl, apiUrl) {
     this.apiUrl = apiUrl;
     this.httpService = new HttpService(baseUrl);
@@ -18,10 +26,7 @@ class CrudService {
   }
 
   getSomeById(ids) {
-    let queryObject = null;
-    if (ids) {
-      queryObject = {ids: ids};
-    }
+    const queryObject = CrudService.getQueryIdsObject(ids);
     return this.httpService.get(this.getUrl(), queryObject);
   }
 
@@ -34,11 +39,16 @@ class CrudService {
   }
 
   deleteSomeById(ids) {
-    return this.httpService.delete(this.getUrl(), ids);
+    const queryObject = CrudService.getQueryIdsObject(ids);
+    return this.httpService.delete(this.getUrl(), queryObject);
   }
 
   getUrl(id) {
-    return this.apiUrl + id ? +`/${id}` : '';
+    let url = this.apiUrl;
+    if (id) {
+      url += `/${id}`;
+    }
+    return url;
   }
 
 }

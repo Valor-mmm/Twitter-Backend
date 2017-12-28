@@ -14,7 +14,8 @@ class SyncHttpService {
       return JSON.parse(res.getBody('utf8'));
     }
 
-    throw this.getErrorObject(res.statusCode, 'GET', this.baseUrl + url);
+    const error = this.getErrorObject(res.statusCode, 'GET', this.baseUrl + url);
+    throw error;
   }
 
   post(url, obj) {
@@ -23,12 +24,12 @@ class SyncHttpService {
       return JSON.parse(res.getBody('utf8'));
     }
 
-    throw this.getErrorObject(res.statusCode, 'POST', this.baseUrl + url);
+    const error = this.getErrorObject(res.statusCode, 'POST', this.baseUrl + url);
+    throw error;
   }
 
   delete(url, obj) {
-    let res;
-    res = request('DELETE', this.baseUrl + url, obj ? {json: obj} : {});
+    const res = request('DELETE', this.baseUrl + url, obj ? {qs: obj} : void(0));
     return res.statusCode;
   }
 
@@ -38,7 +39,8 @@ class SyncHttpService {
       return JSON.parse(res.getBody('utf8'));
     }
 
-    throw this.getErrorObject(res.statusCode, 'PUT', this.baseUrl + url);
+    const error = this.getErrorObject(res.statusCode, 'PUT', this.baseUrl + url);
+    throw error;
   }
 
   getErrorObject(code, method, url, cause) {
