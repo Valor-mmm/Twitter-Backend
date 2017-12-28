@@ -1,0 +1,21 @@
+{
+  "baseUrl": "http://localhost:4000",
+  "apiUrl": "/api/tweets",
+  "singleObject": {
+    "content": "FirstTweet",
+    "poster": ""
+  },
+  "objectList": [
+    {
+      "content": "Second Tweet",
+      "poster": ""
+    },
+    {
+      "content": "Third Tweet",
+      "poster": ""
+    }
+  ],
+  "changedAttributes": {
+    "content": "changedContent"
+  }
+}
