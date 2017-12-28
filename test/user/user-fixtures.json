@@ -1,0 +1,49 @@
+{
+  "baseUrl": "http://localhost:4000",
+  "apiUrl": "/api/users",
+  "singleObject": {
+    "username": "user1",
+    "password": "pw1",
+    "firstName": "fn1",
+    "lastName": "ln1",
+    "email": "user@1.com",
+    "following": [
+
+    ],
+    "tweets": [
+
+    ]
+  },
+  "objectList": [
+    {
+      "username": "user2",
+      "password": "pw2",
+      "firstName": "fn2",
+      "lastName": "ln2",
+      "email": "user@2.com",
+      "following": [
+
+      ],
+      "tweets": [
+
+      ]
+    },
+    {
+      "username": "user3",
+      "password": "pw3",
+      "firstName": "fn3",
+      "lastName": "ln3",
+      "email": "user@3.com",
+      "following": [
+
+      ],
+      "tweets": [
+
+      ]
+    }
+  ],
+  "changedAttributes": {
+    "lastName": "lnChanged",
+    "firstName": "fnChanged"
+  }
+}
