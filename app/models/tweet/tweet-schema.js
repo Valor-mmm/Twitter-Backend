@@ -16,7 +16,10 @@ const tweetSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: userSchema
   },
-  upvotes: Number
+  upvotes: {
+    type: Number,
+    default: 0
+  }
 }, {
   timestamps: true
 });

@@ -4,8 +4,11 @@ const Joi = require('joi');
 const Boom = require('boom');
 const logger = require('simple-node-logger').createSimpleLogger();
 
-const getIdSchema = () => {
-  return Joi.string().required();
+const getIdSchema = (isRequired) => {
+  if (isRequired) {
+    return Joi.string().required();
+  }
+  return Joi.string();
 };
 
 
