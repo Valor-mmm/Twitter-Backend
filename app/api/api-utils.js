@@ -4,12 +4,14 @@ const logger = require('simple-node-logger').createSimpleLogger();
 const Boom = require('boom');
 const _ = require('lodash');
 
+const arrayPattern = new RegExp('^(\\w*?)\\[(\\d*?)\\]$');
+
 
 const create = function (modelName, modelData, model) {
   const toSave = new model(modelData);
-  const couldSave = save(toSave, modelName);
-  if (couldSave) {
-    return true;
+  const savedEntity = save(toSave, modelName);
+  if (savedEntity) {
+    return savedEntity;
   }
   const message = `Could not save model [${modelName}]`;
   logger.error(message);
@@ -30,18 +32,11 @@ const findById = function (modelName, model, id, fields) {
 
 
 const update = function (modelName, model, id, newData) {
-  const toChange = findById(modelName, model, id);
+  logger.debug(`Creating query findOneAndUpdate qurey for [${modelName}] and id [${id}].`);
+  const query = model.findOneAndUpdate({_id: id}, newData, {new: true});
+  logger.debug('Finished creating query', query);
 
-  // TODO !!
-
-  const changed = _.merge(toChange, newData);
-  const couldSave = save(changed, modelName);
-  if (couldSave) {
-    return true;
-  }
-  const message = `Could not update model [${modelName}]`;
-  logger.error(message);
-  return Boom.badImplementation(message);
+  return executeQuery(modelName, query);
 };
 
 
@@ -100,13 +95,43 @@ const createQueryById = function (modelName, model, id, fields) {
 const save = async function (toSave, modelName){
   logger.debug(`Saving model [${modelName}]`);
   try {
-    await toSave.save();
+    const savedEntity = await toSave.save();
     logger.info(`Successfully saves model [${modelName}].`);
-    return true;
+    return savedEntity;
   } catch(error) {
     logger.error(`Could not save model [${modelName}].`, error);
     return false;
   }
+};
+
+
+const convertQueryString = function (query) {
+  let queryObject = {};
+  const queryElements = _.toPairs(query);
+
+  for (const queryElem of queryElements) {
+    if (arrayPattern.test(queryElem[0])) {
+      queryObject = addToArray(queryObject, queryElem);
+    } else {
+      queryObject[queryElem[0]] = queryElem[1];
+    }
+  }
+  return queryObject;
+};
+
+
+const addToArray = function (queryObject, queryElem) {
+  const match = arrayPattern.exec(queryElem[0]);
+  const arrName = match[1];
+  const arrIndex = match[2];
+
+  if (queryObject.hasOwnProperty(arrName)) {
+    queryObject[arrName].splice(arrIndex, 0, queryElem[1]);
+  } else {
+    queryObject[arrName] = [queryElem[1]];
+  }
+
+  return queryObject;
 };
 
 
@@ -115,3 +140,4 @@ exports.find = find;
 exports.findById = findById;
 exports.update = update;
 exports.delete = deleteEntry;
+exports.convertQueryString = convertQueryString;

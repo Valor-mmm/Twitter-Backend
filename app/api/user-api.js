@@ -1,6 +1,8 @@
 'use strict';
 
 const Joi = require('joi');
+const _ = require('lodash');
+const logger = require('simple-node-logger').createSimpleLogger();
 
 const User = require('../models/user/user');
 const apiUtils = require('./api-utils');
@@ -9,16 +11,28 @@ const validationUtils = require('./validation-utils');
 const modelName = 'User';
 
 const getUserProperties = function (required) {
-  return {
-    username: Joi.string().required(required),
-    email: Joi.string().required(required),
-    password: Joi.string().required(required),
-    firstName: Joi.string().required(required),
-    lastName: Joi.string().required(required),
+  const baseObject = {
     tweets: Joi.array().items(Joi.string()),
     following: Joi.array().items(Joi.string()),
-    _id: validationUtils.idSchema()
   };
+
+  if (required) {
+    return _.merge(baseObject, {
+      username: Joi.string().required(required),
+      email: Joi.string().required(required),
+      password: Joi.string().required(required),
+      firstName: Joi.string().required(required),
+      lastName: Joi.string().required(required),
+    });
+  }
+
+  return _.merge(baseObject, {
+    username: Joi.string(),
+    email: Joi.string(),
+    password: Joi.string(),
+    firstName: Joi.string(),
+    lastName: Joi.string(),
+  });
 };
 
 const create = {
@@ -51,10 +65,13 @@ const getSomeById = {
   // TODO add validation: validate: validationUtils.getIdArrayValidation(),
 
   handler: (request, h) => {
+    let query = request.query;
+    query = apiUtils.convertQueryString(query);
     let constraints;
-    if (request.query.ids) {
+    logger.info('Query: ' ,query);
+    if (query.ids) {
       constraints = {
-        _id: {$in: request.query.ids}
+        _id: {$in: query.ids}
       };
     }
 
@@ -100,9 +117,14 @@ const deleteSomeById = {
   validate: validationUtils.getIdArrayValidation(),
 
   handler: (request, h) => {
-    const constraints = {
-      id: {$in: request.payload.ids}
-    };
+    let constraints;
+    let query = apiUtils.convertQueryString(request.query);
+    if (query.ids) {
+      constraints = {
+        _id: {$in: query.ids}
+      };
+    }
+
     return apiUtils.delete(modelName, User, constraints);
   }
 };
