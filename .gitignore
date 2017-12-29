@@ -1,3 +1,4 @@
 .idea
 node_modules
 db-config-local.json
+cloudinary-config-local.json
