@@ -37,7 +37,7 @@ const create = {
     failAction: validationUtils.validationErrHandler
   },
 
-  handler: (request, h) => {
+  handler: (request) => {
     return apiUtils.create(modelName, request.payload, Tweet);
   }
 };
@@ -47,7 +47,7 @@ const getOne = {
 
   // TODO add validation:validate: validationUtils.getIdParamsValidation(),
 
-  handler: (request, h) => {
+  handler: (request) => {
     return apiUtils.findById(modelName, Tweet, request.params.id);
   }
 };
@@ -57,7 +57,7 @@ const getSomeById = {
 
   // TODO add validation: validate: validationUtils.getIdArrayValidation(),
 
-  handler: (request, h) => {
+  handler: (request) => {
     let query = request.query;
     query = apiUtils.convertQueryString(query);
     let constraints;
@@ -86,7 +86,7 @@ const update = {
     failAction: validationUtils.validationErrHandler
   },
 
-  handler: (request, h) => {
+  handler: (request) => {
     return apiUtils.update(modelName, Tweet, request.params.id, request.payload);
   }
 };
@@ -96,7 +96,7 @@ const deleteOne = {
 
   validate: validationUtils.getIdParamsValidation(),
 
-  handler: (request, h) => {
+  handler: (request) => {
     const constraints = {
       _id: request.params.id
     };
@@ -109,7 +109,7 @@ const deleteSomeById = {
 
   validate: validationUtils.getIdArrayValidation(),
 
-  handler: (request, h) => {
+  handler: (request) => {
     let constraints;
     let query = apiUtils.convertQueryString(request.query);
     if (query.ids) {
