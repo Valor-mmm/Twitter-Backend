@@ -4,10 +4,12 @@ const _ = require('lodash');
 
 const userApi = require('./app/api/user-api');
 const tweetApi = require('./app/api/tweet-api');
+const adminApi = require('./app/api/admin-api');
 
 const apiPath = '/api/';
 const userPath = 'users';
 const tweetPath = 'tweets';
+const adminPath = 'admins';
 
 const corsOption = {
   cors: true
@@ -45,6 +47,13 @@ const apiRoutes = [
   {method: 'PUT', path: getPath(tweetPath, true), options: getOptions(tweetApi.update)},
   {method: 'DELETE', path: getPath(tweetPath, true), options: getOptions(tweetApi.deleteOne)},
   {method: 'DELETE', path: getPath(tweetPath), options: getOptions(tweetApi.deleteSomeById)},
+
+  {method: 'POST', path: getPath(adminPath), options: getOptions(adminApi.create)},
+  {method: 'GET', path: getPath(adminPath, true), options: getOptions(adminApi.getOne)},
+  {method: 'GET', path: getPath(adminPath), options: getOptions(adminApi.getSomeById)},
+  {method: 'PUT', path: getPath(adminPath, true), options: getOptions(adminApi.update)},
+  {method: 'DELETE', path: getPath(adminPath, true), options: getOptions(adminApi.deleteOne)},
+  {method: 'DELETE', path: getPath(adminPath), options: getOptions(adminApi.deleteSomeById)},
 
 ];
 
