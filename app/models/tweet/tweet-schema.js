@@ -8,10 +8,7 @@ const tweetSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  image: {
-    type: Buffer,
-    contentType: String
-  },
+  image: String,
   poster: {
     type: mongoose.Schema.Types.ObjectId,
     ref: userSchema
