@@ -1,9 +1,11 @@
 'use strict';
 
+const logger = require('simple-node-logger').createSimpleLogger();
+const Boom = require('boom');
 const cloudinary = require('cloudinary');
 const uploader = cloudinary.v2.uploader;
 
-let cloudinaryConfig = require('./cloudinary-config');
+let cloudinaryConfig = require('./cloudinary-config-local');
 
 if (process.env.NODE_ENV === 'production') {
   cloudinaryConfig = process.env.CLOUDINARY_CONFIG;
@@ -11,17 +13,22 @@ if (process.env.NODE_ENV === 'production') {
 cloudinary.config(cloudinaryConfig);
 
 const uploadImage = async function(data) {
-  const result = await upload(data);
-  return result;
+  try {
+    const result = await upload(data);
+    return result;
+  } catch (error) {
+    logger.error('Error during image upload.', error);
+    return Boom.badImplementation('Could not upload image.');
+  }
 };
 
-const upload = async function (data) {
+const upload = function (data) {
   const result = uploader.upload(data.path);
   return result;
 };
 
 const getImageUrl = async function (publicId) {
-  const result = cloudinary.url(publicId);
+  const result = cloudinary.url(publicId, {secure: true});
   return result;
 };
 
