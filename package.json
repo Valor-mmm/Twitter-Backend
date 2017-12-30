@@ -24,6 +24,8 @@
     "mocha": "^4.0.1",
     "mongoose": "^4.13.7",
     "mongoose-seeder": "^1.2.1",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
     "simple-node-logger": "^0.93.33",
     "sync-request": "^4.1.0"
   },
