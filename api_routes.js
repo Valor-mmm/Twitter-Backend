@@ -5,11 +5,13 @@ const _ = require('lodash');
 const userApi = require('./app/api/user-api');
 const tweetApi = require('./app/api/tweet-api');
 const adminApi = require('./app/api/admin-api');
+const imageApi = require('./app/api/image-api');
 
 const apiPath = '/api/';
 const userPath = 'users';
 const tweetPath = 'tweets';
 const adminPath = 'admins';
+const imagePath = 'images';
 
 const corsOption = {
   cors: true
@@ -54,6 +56,9 @@ const apiRoutes = [
   {method: 'PUT', path: getPath(adminPath, true), options: getOptions(adminApi.update)},
   {method: 'DELETE', path: getPath(adminPath, true), options: getOptions(adminApi.deleteOne)},
   {method: 'DELETE', path: getPath(adminPath), options: getOptions(adminApi.deleteSomeById)},
+
+  {method: 'POST', path: getPath(imagePath), options: getOptions(imageApi.saveImage)},
+  {method: 'GET', path: getPath(imagePath), options: getOptions(imageApi.getImageUrl)},
 
 ];
 
