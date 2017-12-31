@@ -3,7 +3,9 @@
 const jwt = require('jsonwebtoken');
 const logger = require('simple-node-logger').createSimpleLogger();
 
-let password = require('auth-config').password;
+const apiUtils = require('./api-utils');
+
+let password = require('./auth-config').password;
 
 if (process.env.NODE_ENV === 'production') {
   password = process.env.JWT_PASSWORD;
@@ -28,5 +30,22 @@ const decodeToken = function (token) {
   }
 };
 
+
+const authenticate = async function(modelName, model, conditions, password) {
+  try {
+    const foundObject = await apiUtils.findOne(modelName, model, conditions);
+    if (foundObject && foundObject.password && foundObject.password === password) {
+      return true;
+    }
+    logger.warn('No object found matching conditions and password.');
+    return false;
+  } catch(error) {
+    logger.error('Error during authentication', error);
+    return false;
+  }
+};
+
+
 exports.createToken = createToken;
 exports.decodeToken = decodeToken;
+exports.authenticate = authenticate;
