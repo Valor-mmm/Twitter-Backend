@@ -36,6 +36,7 @@ const getPath = (path, id) => {
 
 const apiRoutes = [
 
+  {method: 'POST', path: getPath(userPath) + '/authenticate', options: getOptions(userApi.authenticate)},
   {method: 'POST', path: getPath(userPath), options: getOptions(userApi.create)},
   {method: 'GET', path: getPath(userPath, true), options: getOptions(userApi.getOne)},
   {method: 'GET', path: getPath(userPath), options: getOptions(userApi.getSomeById)},

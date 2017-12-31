@@ -1,12 +1,14 @@
 'use strict';
 
 const Joi = require('joi');
+const Boom = require('boom');
 const _ = require('lodash');
 const logger = require('simple-node-logger').createSimpleLogger();
 
 const User = require('../../models/user/user');
 const apiUtils = require('../api-utils');
 const validationUtils = require('../validation-utils');
+const authUtils = require('../auth-utils');
 
 const modelName = 'User';
 
@@ -33,6 +35,38 @@ const getUserProperties = function (required) {
     firstName: Joi.string(),
     lastName: Joi.string(),
   });
+};
+
+
+const authenticate = {
+
+  auth: false,
+
+  validate: {
+
+    payload: {
+      email: Joi.string().required(),
+      password: Joi.string().required()
+    },
+
+    failAction: validationUtils.validationErrHandler
+  },
+
+  handler: (request, h) => {
+    const password = request.payload.password;
+    const email = request.payload.email;
+    const conditions = {
+      email: email
+    };
+
+    if (!authUtils.authenticate(modelName, User, conditions, password)) {
+      return h.response(
+        {success: false, message: 'Authentication failed. User not found.'}).code(201);
+    }
+
+    const token = authUtils.createToken({email: email});
+    return h.response({success: true, token: token}).code(201);
+  }
 };
 
 const create = {
@@ -68,7 +102,7 @@ const getSomeById = {
     let query = request.query;
     query = apiUtils.convertQueryString(query);
     let constraints;
-    logger.info('Query: ' ,query);
+    logger.info('Query: ', query);
     if (query.ids) {
       constraints = {
         _id: {$in: query.ids}
@@ -129,6 +163,8 @@ const deleteSomeById = {
   }
 };
 
+
+exports.authenticate = authenticate;
 exports.create = create;
 exports.getOne = getOne;
 exports.getSomeById = getSomeById;
