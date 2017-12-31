@@ -2,8 +2,8 @@
 
 const Joi = require('joi');
 
-const validationUtils = require('./validation-utils');
-const imageHandler = require('../models/image-handler');
+const validationUtils = require('../validation-utils');
+const imageHandler = require('../../models/image-handler');
 
 const saveImage = {
 

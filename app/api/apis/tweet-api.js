@@ -1,29 +1,31 @@
 'use strict';
 
 const Joi = require('joi');
+const _ = require('lodash');
 const logger = require('simple-node-logger').createSimpleLogger();
 
-const Admin = require('../models/admin/admin');
-const apiUtils = require('./api-utils');
-const validationUtils = require('./validation-utils');
+const Tweet = require('../../models/tweet/tweet');
+const apiUtils = require('../api-utils');
+const validationUtils = require('../validation-utils');
 
-const modelName = 'Admin';
+const modelName = 'Tweet';
 
 const getTweetProperties = function (required) {
+  const baseObject = {
+    upvotes: Joi.number().min(0),
+    image: Joi.string()
+  };
 
   if (required) {
-    return {
-      username: Joi.string().required(),
-      email: Joi.string().required(),
-      password: Joi.string().required()
-    };
+    return _.merge(baseObject, {
+      content: Joi.string().required(),
+      poster: validationUtils.idSchema(false),
+    });
   }
 
-  return {
-    username: Joi.string(),
-    email: Joi.string(),
-    password: Joi.string()
-  };
+  return _.merge(baseObject, {
+    content: Joi.string()
+  });
 };
 
 const create = {
@@ -36,7 +38,7 @@ const create = {
   },
 
   handler: (request) => {
-    return apiUtils.create(modelName, request.payload, Admin);
+    return apiUtils.create(modelName, request.payload, Tweet);
   }
 };
 
@@ -46,7 +48,7 @@ const getOne = {
   // TODO add validation:validate: validationUtils.getIdParamsValidation(),
 
   handler: (request) => {
-    return apiUtils.findById(modelName, Admin, request.params.id);
+    return apiUtils.findById(modelName, Tweet, request.params.id);
   }
 };
 
@@ -66,7 +68,7 @@ const getSomeById = {
       };
     }
 
-    return apiUtils.find(modelName, Admin, constraints ? constraints : null);
+    return apiUtils.find(modelName, Tweet, constraints ? constraints : null);
   }
 };
 
@@ -85,7 +87,7 @@ const update = {
   },
 
   handler: (request) => {
-    return apiUtils.update(modelName, Admin, request.params.id, request.payload);
+    return apiUtils.update(modelName, Tweet, request.params.id, request.payload);
   }
 };
 
@@ -98,7 +100,7 @@ const deleteOne = {
     const constraints = {
       _id: request.params.id
     };
-    return apiUtils.delete(modelName, Admin, constraints);
+    return apiUtils.delete(modelName, Tweet, constraints);
   }
 };
 
@@ -116,7 +118,7 @@ const deleteSomeById = {
       };
     }
 
-    return apiUtils.delete(modelName, Admin, constraints);
+    return apiUtils.delete(modelName, Tweet, constraints);
   }
 };
 

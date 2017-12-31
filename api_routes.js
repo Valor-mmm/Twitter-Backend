@@ -2,10 +2,10 @@
 
 const _ = require('lodash');
 
-const userApi = require('./app/api/user-api');
-const tweetApi = require('./app/api/tweet-api');
-const adminApi = require('./app/api/admin-api');
-const imageApi = require('./app/api/image-api');
+const userApi = require('./app/api/apis/user-api');
+const tweetApi = require('./app/api/apis/tweet-api');
+const adminApi = require('./app/api/apis/admin-api');
+const imageApi = require('./app/api/apis/image-api');
 
 const apiPath = '/api/';
 const userPath = 'users';
