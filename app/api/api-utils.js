@@ -3,57 +3,82 @@
 const logger = require('simple-node-logger').createSimpleLogger();
 const Boom = require('boom');
 const _ = require('lodash');
+const TimeLogger = require('time-logger');
+TimeLogger.log = (key, details) => logger.debug(key, details);
 
 const arrayPattern = new RegExp('^(\\w*?)\\[(\\d*?)\\]$');
 
-
+const createTimeName = 'create';
 const create = function (modelName, modelData, model) {
+  TimeLogger.start(createTimeName);
   const toSave = new model(modelData);
   const savedEntity = save(toSave, modelName);
   if (savedEntity) {
+    wrapUpTimeLog(createTimeName);
     return savedEntity;
   }
   const message = `Could not save model [${modelName}]`;
   logger.error(message);
+  wrapUpTimeLog(createTimeName);
   return Boom.badImplementation(message);
 };
 
 
+const findTimeName = 'find';
 const find = function (modelName, model, constraints, fields) {
+  TimeLogger.start(findTimeName);
   const query = createQuery(modelName, model, constraints, fields);
-  return executeQuery(modelName, query);
+  const queryResult = executeQuery(modelName, query);
+  wrapUpTimeLog(findTimeName);
+  return queryResult;
 };
 
 
+const findByIdTimeName = 'findById';
 const findById = function (modelName, model, id, fields) {
+  TimeLogger.start(findByIdTimeName);
   const query = createQueryById(modelName, model, id, fields);
-  return executeQuery(modelName, query);
+  const queryResult =  executeQuery(modelName, query);
+  wrapUpTimeLog(findByIdTimeName);
+  return queryResult;
 };
 
+
+const findOneTimeName = 'findOne';
 const findOne = function (modelName, model, constraints, fields) {
+  TimeLogger.start(findOneTimeName);
   logger.info(`Creating query findOne for [${modelName}]`);
   const query = model.findOne(constraints, fields);
-  return executeQuery(modelName, query);
+  const queryResult = executeQuery(modelName, query);
+  wrapUpTimeLog(findOneTimeName);
+  return queryResult;
 };
 
 
+const updateTimeName = 'update';
 const update = function (modelName, model, id, newData) {
+  TimeLogger.start(updateTimeName);
   logger.debug(`Creating query findOneAndUpdate for [${modelName}] and id [${id}].`);
   const query = model.findOneAndUpdate({_id: id}, newData, {new: true});
   logger.debug('Finished creating query', query);
-
-  return executeQuery(modelName, query);
+  const queryResult = executeQuery(modelName, query);
+  wrapUpTimeLog(updateTimeName);
+  return queryResult;
 };
 
 
+const deleteTimeName = 'delete';
 const deleteEntry = async function (modelName, model, constraints) {
+  TimeLogger.start(deleteTimeName);
   try {
     await model.remove(constraints ? constraints : {});
     logger.info(`Deleted document(s) of model [${modelName}]`);
+    wrapUpTimeLog(deleteTimeName);
     return true;
   } catch (error) {
     const message = `Could not remove document(s) of model [${modelName}]`;
     logger.error(message, error);
+    wrapUpTimeLog(deleteTimeName);
     return Boom.badImplementation(message);
   }
 };
@@ -138,6 +163,13 @@ const addToArray = function (queryObject, queryElem) {
   }
 
   return queryObject;
+};
+
+
+const wrapUpTimeLog = function (label) {
+  TimeLogger.end(label);
+  TimeLogger.dump(label);
+  TimeLogger.clear(label);
 };
 
 
