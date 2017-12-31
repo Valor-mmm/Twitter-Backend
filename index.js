@@ -4,7 +4,7 @@ const Hapi = require('hapi');
 const logger = require('simple-node-logger').createSimpleLogger();
 
 const options = {
-  port: 4000
+  port: process.env.PORT || 4000
 };
 
 const server = Hapi.server(options);

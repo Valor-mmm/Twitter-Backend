@@ -12,6 +12,9 @@
     "NodeJS",
     "Backend"
   ],
+  "engines": {
+    "node": "8.9.3"
+  },
   "author": "Valor",
   "license": "ISC",
   "dependencies": {
