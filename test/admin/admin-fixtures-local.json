@@ -1,0 +1,25 @@
+{
+  "baseUrl": "http://localhost:4000",
+  "apiUrl": "/api/admins",
+  "singleObject": {
+    "username": "First Admin",
+    "password": "admin1",
+    "email": "admin@1.com"
+  },
+  "objectList": [
+    {
+      "username": "Second Admin",
+      "password": "admin2",
+      "email": "admin@2.com"
+    },
+    {
+      "username": "Third Admin",
+      "password": "admin3",
+      "email": "admin@3.com"
+    }
+  ],
+  "changedAttributes": {
+    "password": "moreSecret",
+    "email": "changedMail"
+  }
+}

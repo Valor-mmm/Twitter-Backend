@@ -1,8 +1,8 @@
 'use strict';
 
 const CrudTester = require('../crud-tester');
-const fixtures = require('./tweet-fixtures');
-const userFixtures = require('../user/user-fixtures');
+const fixtures = require('./tweet-fixtures-local');
+const userFixtures = require('../user/user-fixtures-local');
 const logger = require('simple-node-logger').createSimpleLogger();
 
 

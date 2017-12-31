@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert;
-const fixtures = require('./image-fixtures');
+const fixtures = require('./image-fixtures-local');
 
 const RequestService = require('../request-service');
 

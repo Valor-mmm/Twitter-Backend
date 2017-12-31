@@ -1,7 +1,7 @@
 'use strict';
 
 const CrudTester = require('../crud-tester');
-const fixtures = require('./user-fixtures');
+const fixtures = require('./user-fixtures-local');
 const logger = require('simple-node-logger').createSimpleLogger();
 
 // eslint-disable-next-line no-undef
