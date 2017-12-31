@@ -30,9 +30,15 @@ const findById = function (modelName, model, id, fields) {
   return executeQuery(modelName, query);
 };
 
+const findOne = function (modelName, model, constraints, fields) {
+  logger.info(`Creating query findOne for [${modelName}]`);
+  const query = model.findOne(constraints, fields);
+  return executeQuery(modelName, query);
+};
+
 
 const update = function (modelName, model, id, newData) {
-  logger.debug(`Creating query findOneAndUpdate qurey for [${modelName}] and id [${id}].`);
+  logger.debug(`Creating query findOneAndUpdate for [${modelName}] and id [${id}].`);
   const query = model.findOneAndUpdate({_id: id}, newData, {new: true});
   logger.debug('Finished creating query', query);
 
@@ -138,6 +144,7 @@ const addToArray = function (queryObject, queryElem) {
 exports.create = create;
 exports.find = find;
 exports.findById = findById;
+exports.findOne = findOne;
 exports.update = update;
 exports.delete = deleteEntry;
 exports.convertQueryString = convertQueryString;
