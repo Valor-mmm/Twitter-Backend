@@ -2,3 +2,4 @@
 node_modules
 db-config-local.json
 cloudinary-config-local.json
+auth-config-local.json
