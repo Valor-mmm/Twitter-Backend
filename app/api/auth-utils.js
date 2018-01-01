@@ -5,8 +5,6 @@ const logger = require('simple-node-logger').createSimpleLogger();
 
 const apiUtils = require('./api-utils');
 
-const authConfig = getAuthConfig();
-
 /*
   Will be filled through registerForValidation function.
   This object is a map of model names and functions for validation
@@ -28,6 +26,8 @@ const getAuthConfig = function () {
 
   return authConfig;
 };
+
+const authConfig = getAuthConfig();
 
 const createToken = function (payload) {
   const config = {
@@ -53,27 +53,27 @@ const authenticate = async function (modelName, model, conditions, password) {
   try {
     const foundObject = await apiUtils.findOne(modelName, model, conditions);
     if (foundObject && foundObject.password && foundObject.password === password) {
-      return true;
+      return {success: true, id: foundObject._id};
     }
     logger.warn('No object found matching conditions and password.');
-    return false;
+    return {success: false};
   } catch (error) {
     logger.error('Error during authentication', error);
-    return false;
+    return {success: false};
   }
 };
 
 
-const validate = function (decoded, request, callback) {
+const validate = async function (request, token, h) {
   for (const modelName in validators) {
-    if (validators.hasOwnProperty(modelName) && decoded.modelName === modelName) {
-      const isValid = validators[modelName](decoded);
-      callback(null, isValid);
-      return;
+    if (validators.hasOwnProperty(modelName) && token.decodedJWT.modelName === modelName) {
+      const isValid = await validators[modelName](token.decodedJWT);
+      return {isValid: isValid, credentials: token.decodedJWT};
     }
   }
-  logger.error(`No validator found for model name [${decoded.modelname}]`, Object.keys(validators));
-  callback(null, false);
+  const errMessage = `No validator found for model name [${token.decodedJWT.modelname}]`;
+  logger.error(errMessage, Object.keys(validators));
+  return {isValid: false, credentials: token.decodedJWT};
 };
 
 
@@ -82,6 +82,7 @@ const registerForValidation = function (modelName, validationFunction) {
 };
 
 
+exports.getJwtConfig = getAuthConfig;
 exports.createToken = createToken;
 exports.decodeToken = decodeToken;
 exports.authenticate = authenticate;
