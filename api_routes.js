@@ -1,6 +1,8 @@
 'use strict';
 
 const _ = require('lodash');
+const Boom = require('boom');
+const logger = require('simple-node-logger').createSimpleLogger();
 
 const userApi = require('./app/api/apis/user-api');
 const tweetApi = require('./app/api/apis/tweet-api');
@@ -17,12 +19,12 @@ const corsOption = {
   cors: true
 };
 
-const securityOption = {
+const getOptions = (specificOptions, roles) => {
+  const result = _.merge(_.clone(corsOption), specificOptions);
 
-};
-
-const getOptions = (specificOptions) => {
-  const result = _.merge(_.clone(corsOption), securityOption, specificOptions);
+  if (roles) {
+    result.handler = authorizeBeforeHandler(roles, _.clone(result.handler));
+  }
   return result;
 };
 
@@ -34,30 +36,44 @@ const getPath = (path, id) => {
   return basePath;
 };
 
+const authorizeBeforeHandler = (roles, handler) => {
+
+  return (request, h) => {
+    const modelName = request.auth.credentials.modelName;
+    const isAuthorized = roles.indexOf(modelName) > -1;
+    if (!isAuthorized) {
+      logger.warn(`Could not authorize request for modelName [${modelName}]`, roles);
+      return Boom.unauthorized(`Not authorized with role: [${modelName}]`);
+    }
+    logger.debug(`Authorised request for [${modelName}]`);
+    return handler(request, h);
+  };
+};
+
 const apiRoutes = [
 
   {method: 'POST', path: getPath(userPath) + '/authenticate', options: getOptions(userApi.authenticate)},
   {method: 'POST', path: getPath(userPath), options: getOptions(userApi.create)},
-  {method: 'GET', path: getPath(userPath, true), options: getOptions(userApi.getOne)},
-  {method: 'GET', path: getPath(userPath), options: getOptions(userApi.getSomeById)},
-  {method: 'PUT', path: getPath(userPath, true), options: getOptions(userApi.update)},
-  {method: 'DELETE', path: getPath(userPath, true), options: getOptions(userApi.deleteOne)},
-  {method: 'DELETE', path: getPath(userPath), options: getOptions(userApi.deleteSomeById)},
+  {method: 'GET', path: getPath(userPath, true), options: getOptions(userApi.getOne, ['User', 'Admin'])},
+  {method: 'GET', path: getPath(userPath), options: getOptions(userApi.getSomeById, ['User', 'Admin'])},
+  {method: 'PUT', path: getPath(userPath, true), options: getOptions(userApi.update, ['User'])},
+  {method: 'DELETE', path: getPath(userPath, true), options: getOptions(userApi.deleteOne, ['User', 'Admin'])},
+  {method: 'DELETE', path: getPath(userPath), options: getOptions(userApi.deleteSomeById, ['User', 'Admin'])},
 
-  {method: 'POST', path: getPath(tweetPath), options: getOptions(tweetApi.create)},
-  {method: 'GET', path: getPath(tweetPath, true), options: getOptions(tweetApi.getOne)},
-  {method: 'GET', path: getPath(tweetPath), options: getOptions(tweetApi.getSomeById)},
-  {method: 'PUT', path: getPath(tweetPath, true), options: getOptions(tweetApi.update)},
-  {method: 'DELETE', path: getPath(tweetPath, true), options: getOptions(tweetApi.deleteOne)},
-  {method: 'DELETE', path: getPath(tweetPath), options: getOptions(tweetApi.deleteSomeById)},
+  {method: 'POST', path: getPath(tweetPath), options: getOptions(tweetApi.create, ['User'])},
+  {method: 'GET', path: getPath(tweetPath, true), options: getOptions(tweetApi.getOne, ['User', 'Admin'])},
+  {method: 'GET', path: getPath(tweetPath), options: getOptions(tweetApi.getSomeById, ['User', 'Admin'])},
+  {method: 'PUT', path: getPath(tweetPath, true), options: getOptions(tweetApi.update, ['User'])},
+  {method: 'DELETE', path: getPath(tweetPath, true), options: getOptions(tweetApi.deleteOne, ['User', 'Admin'])},
+  {method: 'DELETE', path: getPath(tweetPath), options: getOptions(tweetApi.deleteSomeById, ['User', 'Admin'])},
 
   {method: 'POST', path: getPath(adminPath) + '/authenticate', options: getOptions(adminApi.authenticate)},
-  {method: 'POST', path: getPath(adminPath), options: getOptions(adminApi.create)},
-  {method: 'GET', path: getPath(adminPath, true), options: getOptions(adminApi.getOne)},
-  {method: 'GET', path: getPath(adminPath), options: getOptions(adminApi.getSomeById)},
-  {method: 'PUT', path: getPath(adminPath, true), options: getOptions(adminApi.update)},
-  {method: 'DELETE', path: getPath(adminPath, true), options: getOptions(adminApi.deleteOne)},
-  {method: 'DELETE', path: getPath(adminPath), options: getOptions(adminApi.deleteSomeById)},
+  {method: 'POST', path: getPath(adminPath), options: getOptions(adminApi.create, ['Admin'])},
+  {method: 'GET', path: getPath(adminPath, true), options: getOptions(adminApi.getOne, ['Admin'])},
+  {method: 'GET', path: getPath(adminPath), options: getOptions(adminApi.getSomeById, ['Admin'])},
+  {method: 'PUT', path: getPath(adminPath, true), options: getOptions(adminApi.update, ['Admin'])},
+  {method: 'DELETE', path: getPath(adminPath, true), options: getOptions(adminApi.deleteOne, ['Admin'])},
+  {method: 'DELETE', path: getPath(adminPath), options: getOptions(adminApi.deleteSomeById, ['Admin'])},
 
   {method: 'POST', path: getPath(imagePath), options: getOptions(imageApi.saveImage)},
   {method: 'GET', path: getPath(imagePath), options: getOptions(imageApi.getImageUrl)},
