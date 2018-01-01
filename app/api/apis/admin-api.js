@@ -6,6 +6,7 @@ const logger = require('simple-node-logger').createSimpleLogger();
 const Admin = require('../../models/admin/admin');
 const apiUtils = require('../api-utils');
 const validationUtils = require('../validation-utils');
+const authUtils = require('../auth-utils');
 
 const modelName = 'Admin';
 
@@ -24,6 +25,38 @@ const getTweetProperties = function (required) {
     email: Joi.string(),
     password: Joi.string()
   };
+};
+
+
+const authenticate = {
+
+  auth: false,
+
+  validate: {
+
+    payload: {
+      username: Joi.string().required(),
+      password: Joi.string().required()
+    },
+
+    failAction: validationUtils.validationErrHandler
+  },
+
+  handler: (request, h) => {
+    const password = request.payload.password;
+    const username = request.payload.username;
+    const conditions = {
+      username: username
+    };
+
+    if (!authUtils.authenticate(modelName, Admin, conditions, password)) {
+      return h.response(
+        {success: false, message: 'Authentication failed. Admin not found.'}).code(201);
+    }
+
+    const token = authUtils.createToken({username: username});
+    return h.response({success: true, token: token}).code(201);
+  }
 };
 
 const create = {
@@ -120,6 +153,7 @@ const deleteSomeById = {
   }
 };
 
+exports.authenticate = authenticate;
 exports.create = create;
 exports.getOne = getOne;
 exports.getSomeById = getSomeById;

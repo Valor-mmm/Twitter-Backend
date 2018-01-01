@@ -51,6 +51,7 @@ const apiRoutes = [
   {method: 'DELETE', path: getPath(tweetPath, true), options: getOptions(tweetApi.deleteOne)},
   {method: 'DELETE', path: getPath(tweetPath), options: getOptions(tweetApi.deleteSomeById)},
 
+  {method: 'POST', path: getPath(adminPath) + '/authenticate', options: getOptions(adminApi.authenticate)},
   {method: 'POST', path: getPath(adminPath), options: getOptions(adminApi.create)},
   {method: 'GET', path: getPath(adminPath, true), options: getOptions(adminApi.getOne)},
   {method: 'GET', path: getPath(adminPath), options: getOptions(adminApi.getSomeById)},
