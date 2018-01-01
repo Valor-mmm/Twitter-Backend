@@ -1,3 +1,5 @@
 {
-  "password": "secretSamplePassword"
+  "password": "secretSamplePassword",
+  "algorithm": "HS256",
+  "expiresIn": "1h"
 }

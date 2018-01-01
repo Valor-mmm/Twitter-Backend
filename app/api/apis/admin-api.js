@@ -159,6 +159,17 @@ const deleteSomeById = {
   }
 };
 
+
+const validateAdminToken = function (decoded) {
+  const constraints = {
+    _id: decoded.id,
+    username: decoded.username
+  };
+  const queryResult = apiUtils.findOne(modelName, Admin, constraints);
+  return (queryResult && queryResult._id && queryResult._id === decoded.id);
+};
+authUtils.registerForValidation(modelName, validateAdminToken);
+
 exports.authenticate = authenticate;
 exports.create = create;
 exports.getOne = getOne;
