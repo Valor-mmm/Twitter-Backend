@@ -49,12 +49,18 @@ const authenticate = {
       username: username
     };
 
-    if (!authUtils.authenticate(modelName, Admin, conditions, password)) {
+    const authResult = authUtils.authenticate(modelName, Admin, conditions, password);
+    if (!authResult.success) {
       return h.response(
         {success: false, message: 'Authentication failed. Admin not found.'}).code(201);
     }
 
-    const token = authUtils.createToken({username: username});
+    const payload = {
+      id: authResult.id,
+      modelName: modelName,
+      username: username
+    };
+    const token = authUtils.createToken(payload);
     return h.response({success: true, token: token}).code(201);
   }
 };

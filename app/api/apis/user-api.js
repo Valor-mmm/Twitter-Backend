@@ -1,7 +1,6 @@
 'use strict';
 
 const Joi = require('joi');
-const Boom = require('boom');
 const _ = require('lodash');
 const logger = require('simple-node-logger').createSimpleLogger();
 
@@ -59,12 +58,18 @@ const authenticate = {
       email: email
     };
 
-    if (!authUtils.authenticate(modelName, User, conditions, password)) {
+    const authResult = authUtils.authenticate(modelName, User, conditions, password);
+    if (!authResult.success) {
       return h.response(
         {success: false, message: 'Authentication failed. User not found.'}).code(201);
     }
 
-    const token = authUtils.createToken({email: email});
+    const payload = {
+      id: authResult.id,
+      modelName: modelName,
+      email: email
+    };
+    const token = authUtils.createToken(payload);
     return h.response({success: true, token: token}).code(201);
   }
 };
