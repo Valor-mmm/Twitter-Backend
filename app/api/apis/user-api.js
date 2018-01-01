@@ -58,19 +58,7 @@ const authenticate = {
       email: email
     };
 
-    const authResult = authUtils.authenticate(modelName, User, conditions, password);
-    if (!authResult.success) {
-      return h.response(
-        {success: false, message: 'Authentication failed. User not found.'}).code(201);
-    }
-
-    const payload = {
-      id: authResult.id,
-      modelName: modelName,
-      email: email
-    };
-    const token = authUtils.createToken(payload);
-    return h.response({success: true, token: token}).code(201);
+    return authenticateUser(conditions, password, h);
   }
 };
 
@@ -99,7 +87,7 @@ const getOne = {
 };
 
 const getSomeById = {
-  auth: false,
+  //auth: false,
 
   // TODO add validation: validate: validationUtils.getIdArrayValidation(),
 
@@ -169,13 +157,34 @@ const deleteSomeById = {
 };
 
 
-const validateUserToken = function (decoded) {
+const authenticateUser = async function(conditions, password, h) {
+  const authResult = await authUtils.authenticate(modelName, User, conditions, password);
+  if (!authResult.success) {
+    return h.response(
+      {success: false, message: 'Authentication failed. User not found.'}).code(201);
+  }
+
+  const payload = {
+    id: authResult.id,
+    modelName: modelName,
+    email: conditions.email
+  };
+  const token = authUtils.createToken(payload);
+  return h.response({success: true, token: token}).code(201);
+};
+
+
+const validateUserToken = async function (decoded) {
   const constraints = {
     _id: decoded.id,
     email: decoded.email
   };
-  const queryResult = apiUtils.findOne(modelName, User, constraints);
-  return (queryResult && queryResult._id && queryResult._id === decoded.id);
+
+  let queryResult = await apiUtils.findOne(modelName, User, constraints);
+  if (queryResult && queryResult._doc) {
+    queryResult = queryResult._doc;
+  }
+  return (queryResult && queryResult._id && queryResult._id.toString() === decoded.id);
 };
 authUtils.registerForValidation(modelName, validateUserToken);
 

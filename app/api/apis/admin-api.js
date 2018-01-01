@@ -49,19 +49,7 @@ const authenticate = {
       username: username
     };
 
-    const authResult = authUtils.authenticate(modelName, Admin, conditions, password);
-    if (!authResult.success) {
-      return h.response(
-        {success: false, message: 'Authentication failed. Admin not found.'}).code(201);
-    }
-
-    const payload = {
-      id: authResult.id,
-      modelName: modelName,
-      username: username
-    };
-    const token = authUtils.createToken(payload);
-    return h.response({success: true, token: token}).code(201);
+    return authenticateAdmin(conditions, password, h);
   }
 };
 
@@ -160,13 +148,33 @@ const deleteSomeById = {
 };
 
 
-const validateAdminToken = function (decoded) {
+const authenticateAdmin = async function (conditions, password, h) {
+  const authResult = await authUtils.authenticate(modelName, Admin, conditions, password);
+  if (!authResult.success) {
+    return h.response(
+      {success: false, message: 'Authentication failed. Admin not found.'}).code(201);
+  }
+
+  const payload = {
+    id: authResult.id,
+    modelName: modelName,
+    username: conditions.username
+  };
+  const token = authUtils.createToken(payload);
+  return h.response({success: true, token: token}).code(201);
+};
+
+
+const validateAdminToken = async function (decoded) {
   const constraints = {
     _id: decoded.id,
     username: decoded.username
   };
-  const queryResult = apiUtils.findOne(modelName, Admin, constraints);
-  return (queryResult && queryResult._id && queryResult._id === decoded.id);
+  let queryResult = await apiUtils.findOne(modelName, Admin, constraints);
+  if (queryResult && queryResult._doc) {
+    queryResult = queryResult._doc;
+  }
+  return (queryResult && queryResult._id && queryResult._id.toString() === decoded.id);
 };
 authUtils.registerForValidation(modelName, validateAdminToken);
 
