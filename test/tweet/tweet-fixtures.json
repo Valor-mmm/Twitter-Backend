@@ -2,17 +2,14 @@
   "baseUrl": "https://node-js-twitter-backend.herokuapp.com",
   "apiUrl": "/api/tweets",
   "singleObject": {
-    "content": "FirstTweet",
-    "poster": ""
+    "content": "FirstTweet"
   },
   "objectList": [
     {
-      "content": "Second Tweet",
-      "poster": ""
+      "content": "Second Tweet"
     },
     {
-      "content": "Third Tweet",
-      "poster": ""
+      "content": "Third Tweet"
     }
   ],
   "changedAttributes": {

@@ -22,18 +22,19 @@ suite('Admin api test', function () {
     logger.info(`Successfully tested: ${name}`);
   };
 
-  const beforeEachName = 'Delete all';
+  const beforeEachName = 'Delete some and auth';
   // eslint-disable-next-line no-undef
   setup(beforeEachName, function() {
-    crudTester.deleteAll();
+    crudTester.setAdminAuth();
+    crudTester.deleteSome();
     logSuccess(beforeEachName);
   });
 
-  const createOneName = 'Create one';
+  const tearDownName = 'Unset auth';
   // eslint-disable-next-line no-undef
-  test(createOneName, function () {
-    crudTester.createOne();
-    logSuccess(createOneName);
+  teardown(tearDownName, function () {
+    crudTester.unsetAuth();
+    logSuccess(tearDownName);
   });
 
   const createManyName = 'Create many';
@@ -109,22 +110,6 @@ suite('Admin api test', function () {
     crudTester.createOne();
     crudTester.changeSome();
     logSuccess(changeSomeAllName);
-  });
-
-
-  const delOneOneName = 'Delete one of one';
-  // eslint-disable-next-line no-undef
-  test(delOneOneName, function () {
-    crudTester.deleteOne();
-    logSuccess(delOneOneName);
-  });
-
-  const delOneAllName = 'Delete one of all';
-  // eslint-disable-next-line no-undef
-  test(delOneAllName, function () {
-    crudTester.createSome();
-    crudTester.deleteOne();
-    logSuccess(delOneAllName);
   });
 
   const delSomeSomeName = 'Delete some of some';

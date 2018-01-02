@@ -7,7 +7,7 @@ class CrudService {
   static getQueryIdsObject(ids) {
     let queryObject = null;
     if (ids) {
-      queryObject= {ids: ids};
+      queryObject = {ids: ids};
     }
     return queryObject;
   }
@@ -15,6 +15,14 @@ class CrudService {
   constructor(baseUrl, apiUrl) {
     this.apiUrl = apiUrl;
     this.httpService = new HttpService(baseUrl);
+  }
+
+  setAuth(credentials, url) {
+    return this.httpService.setAuth((url ? url : this.getUrl()) + '/authenticate', credentials);
+  }
+
+  unsetAuth() {
+    return this.httpService.clearAuth();
   }
 
   create(object) {

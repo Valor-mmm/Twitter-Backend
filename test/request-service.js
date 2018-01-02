@@ -9,10 +9,26 @@ class RequestService {
     this.baseUrl = baseUrl;
   }
 
+  setToken(token) {
+    this.token = token;
+  }
+
+  setAuth(options) {
+    if (this.token) {
+      const headers = {
+        Authorization: 'bearer ' + this.token
+      };
+      options.headers = headers;
+    }
+    return options;
+  }
+
   get(url, query) {
-    const options = {
+    let options = {
       method: 'GET',
     };
+
+    options = this.setAuth(options);
 
     if (query) {
       options.qs = query;
@@ -22,11 +38,13 @@ class RequestService {
   }
 
   post(url, prop_name, file_path) {
-    const options = {
+    let options = {
       method: 'POST'
     };
 
-    if (prop_name, file_path) {
+    options = this.setAuth(options);
+
+    if (prop_name && file_path) {
       const form = {};
       form[prop_name] = fs.createReadStream(file_path);
       options.formData = form;

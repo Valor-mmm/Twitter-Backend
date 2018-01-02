@@ -61,6 +61,62 @@ class CrudTester {
     return this.fixture.objectList;
   }
 
+
+  // Auth
+
+  setUserAuth(fixture) {
+    let user = this.getSingleObject();
+    let url = null;
+    if (fixture) {
+      user = fixture.singleObject ;
+      url = fixture.apiUrl;
+    }
+
+    const credentials = {
+      email: user.email,
+      password: user.password
+    };
+
+    const token = this.crudService.setAuth(credentials, url);
+    assert.isDefined(token);
+    return token;
+  }
+
+  setAdminAuth(fixture) {
+    let admin = this.getSingleObject();
+    let url = null;
+    if (fixture) {
+      admin = fixture.singleObject;
+      url = fixture.apiUrl;
+    }
+
+    const credentials = {
+      username: admin.username,
+      password: admin.password
+    };
+
+    const token = this.crudService.setAuth(credentials, url);
+    assert.isDefined(token);
+    return token;
+  }
+
+  unsetAuth() {
+    this.crudService.unsetAuth();
+  }
+
+
+  loginUser(fixtures, userTester) {
+    const user = userTester.createOne();
+    this.setUserAuth(fixtures);
+    return user;
+  }
+
+  logoutUser(user, userTester) {
+    userTester.setUserAuth();
+    userTester.deleteByObj(user);
+    this.unsetAuth();
+  }
+
   // Create Block
 
   create(obj) {
@@ -86,8 +142,7 @@ class CrudTester {
   createAll() {
     const result = [];
     result.push(this.createOne());
-    result.concat(this.createSome());
-    return result;
+    return result.concat(this.createSome());
   }
 
 
@@ -211,8 +266,7 @@ class CrudTester {
 
   changeAll() {
     const result = [this.changeOne()];
-    result.concat(this.changeSome());
-    return result;
+    return result.concat(this.changeSome());
   }
 
 
