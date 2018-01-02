@@ -51,7 +51,10 @@ const decodeToken = function (token) {
 
 const authenticate = async function (modelName, model, conditions, password) {
   try {
-    const foundObject = await apiUtils.findOne(modelName, model, conditions);
+    let foundObject = await apiUtils.findOne(modelName, model, conditions);
+    if (foundObject && foundObject._doc) {
+      foundObject = foundObject._doc;
+    }
     if (foundObject && foundObject.password && foundObject.password === password) {
       return {success: true, id: foundObject._id};
     }

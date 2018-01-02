@@ -23,7 +23,7 @@ const getOptions = (specificOptions, roles) => {
   const result = _.merge(_.clone(corsOption), specificOptions);
 
   if (roles) {
-    result.handler = authorizeBeforeHandler(roles, _.clone(result.handler));
+    result.handler = authorizeBeforeHandler(roles, result.handler);
   }
   return result;
 };
@@ -58,7 +58,7 @@ const apiRoutes = [
   {method: 'GET', path: getPath(userPath), options: getOptions(userApi.getSomeById, ['User', 'Admin'])},
   {method: 'PUT', path: getPath(userPath, true), options: getOptions(userApi.update, ['User'])},
   {method: 'DELETE', path: getPath(userPath, true), options: getOptions(userApi.deleteOne, ['User', 'Admin'])},
-  {method: 'DELETE', path: getPath(userPath), options: getOptions(userApi.deleteSomeById, ['User', 'Admin'])},
+  {method: 'DELETE', path: getPath(userPath), options: getOptions(userApi.deleteSomeById, ['Admin'])},
 
   {method: 'POST', path: getPath(tweetPath), options: getOptions(tweetApi.create, ['User'])},
   {method: 'GET', path: getPath(tweetPath, true), options: getOptions(tweetApi.getOne, ['User', 'Admin'])},
@@ -75,8 +75,8 @@ const apiRoutes = [
   {method: 'DELETE', path: getPath(adminPath, true), options: getOptions(adminApi.deleteOne, ['Admin'])},
   {method: 'DELETE', path: getPath(adminPath), options: getOptions(adminApi.deleteSomeById, ['Admin'])},
 
-  {method: 'POST', path: getPath(imagePath), options: getOptions(imageApi.saveImage)},
-  {method: 'GET', path: getPath(imagePath), options: getOptions(imageApi.getImageUrl)},
+  {method: 'POST', path: getPath(imagePath), options: getOptions(imageApi.saveImage, ['User'])},
+  {method: 'GET', path: getPath(imagePath), options: getOptions(imageApi.getImageUrl, ['User', 'Admin'])},
 
 ];
 

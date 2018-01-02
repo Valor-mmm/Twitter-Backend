@@ -7,8 +7,6 @@ const imageHandler = require('../../models/image-handler');
 
 const saveImage = {
 
-  auth: false,
-
   payload: {
     maxBytes: 30485760,
     output: 'file',
@@ -25,15 +23,13 @@ const saveImage = {
     failAction: validationUtils.validationErrHandler
   },
 
-  handler: (request) => {
+  handler: function(request) {
     const data = request.payload.image;
     return imageHandler.uploadImage(data);
   }
 };
 
 const getImageUrl = {
-
-  auth: false,
 
   validate: {
     query: {
@@ -43,7 +39,7 @@ const getImageUrl = {
     failAction: validationUtils.validationErrHandler
   },
 
-  handler: (request) => {
+  handler: function(request) {
     const publicId = request.query.publicId;
     return imageHandler.getImageUrl(publicId);
   }
