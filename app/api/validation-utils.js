@@ -34,7 +34,18 @@ const getIdParamsValidation = () => {
 };
 
 
-const getIdArrayValidation = () => {
+const getIdArrQueryValidation = () => {
+  return {
+    query: Joi.object({
+      ids: getIdArraySchema()
+    }).allow(null),
+
+    failAction: validationErrHandler
+  };
+};
+
+
+const getIdArrPayloadValidation = () => {
   return {
     payload: Joi.object({
       ids: getIdArraySchema()
@@ -48,4 +59,5 @@ exports.idSchema = getIdSchema;
 exports.idArraySchema = getIdArraySchema;
 exports.validationErrHandler = validationErrHandler;
 exports.getIdParamsValidation = getIdParamsValidation;
-exports.getIdArrayValidation = getIdArrayValidation;
+exports.getIdArrPayloadValidation = getIdArrPayloadValidation;
+exports.getIdArrQueryValidation = getIdArrQueryValidation;
