@@ -68,7 +68,7 @@ const create = {
 
 const getOne = {
 
-  // TODO add validation:validate: validationUtils.getIdParamsValidation(),
+  validate: validationUtils.getIdParamsValidation(),
 
   handler: function(request) {
     return apiUtils.findById(modelName, Admin, request.params.id);
@@ -77,7 +77,6 @@ const getOne = {
 
 const getSomeById = {
 
-  // TODO add validation: validate: validationUtils.getIdArrayValidation(),
 
   handler: function(request) {
     let query = request.query;
@@ -120,13 +119,13 @@ const deleteOne = {
     const constraints = {
       _id: request.params.id
     };
-    return apiUtils.delete(modelName, Admin, constraints);
+    return apiUtils.delete(modelName, Admin, constraints, true);
   }
 };
 
 const deleteSomeById = {
 
-  validate: validationUtils.getIdArrayValidation(),
+  validate: validationUtils.getIdArrPayloadValidation(),
 
   handler: function(request) {
     let constraints;
@@ -137,7 +136,7 @@ const deleteSomeById = {
       };
     }
 
-    return apiUtils.delete(modelName, Admin, constraints);
+    return apiUtils.delete(modelName, Admin, constraints, true);
   }
 };
 

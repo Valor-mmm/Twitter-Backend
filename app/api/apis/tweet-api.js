@@ -43,7 +43,7 @@ const create = {
 
 const getOne = {
 
-  // TODO add validation:validate: validationUtils.getIdParamsValidation(),
+  validate: validationUtils.getIdParamsValidation(),
 
   handler: function(request) {
     return apiUtils.findById(modelName, Tweet, request.params.id);
@@ -51,8 +51,6 @@ const getOne = {
 };
 
 const getSomeById = {
-
-  // TODO add validation: validate: validationUtils.getIdArrayValidation(),
 
   handler: function(request) {
     let query = request.query;
@@ -101,7 +99,7 @@ const deleteOne = {
 
 const deleteSomeById = {
 
-  validate: validationUtils.getIdArrayValidation(),
+  validate: validationUtils.getIdArrPayloadValidation(),
 
   handler: function(request) {
     let constraints;

@@ -38,7 +38,7 @@ const findByIdTimeName = 'findById';
 const findById = function (modelName, model, id, fields) {
   TimeLogger.start(findByIdTimeName);
   const query = createQueryById(modelName, model, id, fields);
-  const queryResult =  executeQuery(modelName, query);
+  const queryResult = executeQuery(modelName, query);
   wrapUpTimeLog(findByIdTimeName);
   return queryResult;
 };
@@ -68,9 +68,14 @@ const update = function (modelName, model, id, newData) {
 
 
 const deleteTimeName = 'delete';
-const deleteEntry = async function (modelName, model, constraints) {
+const deleteEntry = async function (modelName, model, constraints, preventEmptyCollection) {
   TimeLogger.start(deleteTimeName);
   try {
+
+    if (preventEmptyCollection) {
+      constraints = await checkDeleteWouldEmpty(modelName, model, constraints);
+    }
+
     await model.remove(constraints ? constraints : {});
     logger.info(`Deleted document(s) of model [${modelName}]`);
     wrapUpTimeLog(deleteTimeName);
@@ -84,7 +89,43 @@ const deleteEntry = async function (modelName, model, constraints) {
 };
 
 
-const executeQuery = async function(modelName, query) {
+const checkDeleteWouldEmpty = async function (modelName, model, constraints) {
+  const queryAll = model.find({});
+  const findAllPromise = executeQuery(modelName, queryAll);
+
+  if (!constraints) {
+    return {_id: {$in: await omitFirstId(modelName, findAllPromise)}};
+  }
+
+  const constrainedQuery = model.find(constraints);
+  const constrainedPromise = executeQuery(modelName, constrainedQuery);
+
+  const findAllResult = await findAllPromise;
+  if (findAllResult.length <= 1) {
+    // dont delete anything when only one entry is in the collection
+    return {_id: {$in: []}};
+  }
+
+  const constrainedResult = await constrainedPromise;
+  if (constrainedResult.length >= findAllResult.length) {
+    return {_id: {$in: await omitFirstId(modelName, findAllPromise)}};
+  }
+
+  return constraints;
+};
+
+
+const omitFirstId = async function(modelName, queryPromise) {
+  const resultArray = [];
+  const promiseResult = await queryPromise;
+  for (let i = 1; i < promiseResult.length; i++){
+    resultArray.push(promiseResult[i]._doc._id);
+  }
+  return resultArray;
+};
+
+
+const executeQuery = async function (modelName, query) {
   try {
     const result = await query.exec();
     logger.info(`Successfully executed query for [${modelName}].`);
@@ -96,7 +137,7 @@ const executeQuery = async function(modelName, query) {
 };
 
 
-const createQuery = function(modelName, model, constraints, fields) {
+const createQuery = function (modelName, model, constraints, fields) {
   logger.debug(`Creating query for ${modelName}, for fields ${fields}`);
 
 
@@ -123,13 +164,13 @@ const createQueryById = function (modelName, model, id, fields) {
 };
 
 
-const save = async function (toSave, modelName){
+const save = async function (toSave, modelName) {
   logger.debug(`Saving model [${modelName}]`);
   try {
     const savedEntity = await toSave.save();
     logger.info(`Successfully saves model [${modelName}].`);
     return savedEntity;
-  } catch(error) {
+  } catch (error) {
     logger.error(`Could not save model [${modelName}].`, error);
     return false;
   }
