@@ -1,7 +1,7 @@
 'use strict';
 
 const CrudTester = require('../crud-tester');
-const fixtures = require('./admin-fixtures-local');
+const fixtures = require('./admin-fixtures');
 const logger = require('simple-node-logger').createSimpleLogger();
 
 // eslint-disable-next-line no-undef
@@ -26,7 +26,7 @@ suite('Admin api test', function () {
   // eslint-disable-next-line no-undef
   setup(beforeEachName, function() {
     crudTester.setAdminAuth();
-    crudTester.deleteSome();
+    crudTester.deleteAll();
     logSuccess(beforeEachName);
   });
 
