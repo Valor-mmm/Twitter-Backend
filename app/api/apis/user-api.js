@@ -164,7 +164,7 @@ const authenticateUser = async function(conditions, password, h) {
     email: conditions.email
   };
   const token = authUtils.createToken(payload);
-  return h.response({success: true, token: token}).code(201);
+  return h.response({success: true, token: token, id: authResult.id}).code(201);
 };
 
 
