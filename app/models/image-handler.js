@@ -5,7 +5,7 @@ const Boom = require('boom');
 const cloudinary = require('cloudinary');
 const uploader = cloudinary.v2.uploader;
 
-let cloudinaryConfig = require('./cloudinary-config');
+let cloudinaryConfig = require('./cloudinary-config-local');
 
 if (process.env.NODE_ENV === 'production') {
   cloudinaryConfig = {

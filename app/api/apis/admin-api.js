@@ -61,7 +61,7 @@ const create = {
     failAction: validationUtils.validationErrHandler
   },
 
-  handler: function(request) {
+  handler: function (request) {
     return apiUtils.create(modelName, request.payload, Admin);
   }
 };
@@ -70,7 +70,7 @@ const getOne = {
 
   validate: validationUtils.getIdParamsValidation(),
 
-  handler: function(request) {
+  handler: function (request) {
     return apiUtils.findById(modelName, Admin, request.params.id);
   }
 };
@@ -78,11 +78,11 @@ const getOne = {
 const getSomeById = {
 
 
-  handler: function(request) {
+  handler: function (request) {
     let query = request.query;
-    query = apiUtils.convertQueryString(query);
+    query = apiUtils.convertIdsQuery(query);
     let constraints;
-    logger.info('Query: ' ,query);
+    logger.info('Query: ', query);
     if (query.ids) {
       constraints = {
         _id: {$in: query.ids}
@@ -106,7 +106,7 @@ const update = {
     failAction: validationUtils.validationErrHandler
   },
 
-  handler: function(request) {
+  handler: function (request) {
     return apiUtils.update(modelName, Admin, request.params.id, request.payload);
   }
 };
@@ -115,7 +115,7 @@ const deleteOne = {
 
   validate: validationUtils.getIdParamsValidation(),
 
-  handler: function(request) {
+  handler: function (request) {
     const constraints = {
       _id: request.params.id
     };
@@ -127,9 +127,9 @@ const deleteSomeById = {
 
   validate: validationUtils.getIdArrPayloadValidation(),
 
-  handler: function(request) {
+  handler: function (request) {
     let constraints;
-    let query = apiUtils.convertQueryString(request.query);
+    let query = apiUtils.convertIdsQuery(request.query);
     if (query.ids) {
       constraints = {
         _id: {$in: query.ids}

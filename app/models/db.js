@@ -42,6 +42,16 @@ const seedDB = async function() {
 
     try {
       const seededData = await seeder.seed(data, {dropDatabase: false, dropCollections: true});
+      const users = await User.find({});
+      const tweets = await Tweet.find({});
+      for(const aUser of users) {
+        for (const aTweet of tweets) {
+          if (aUser._doc._id.equals(aTweet._doc.poster)) {
+            aUser._doc.tweets.push(aTweet._doc._id);
+          }
+        }
+        aUser.save();
+      }
       logger.info('Data seeded to DB', seededData);
     } catch(error) {
       logger.error('Could not seed data.' , error);

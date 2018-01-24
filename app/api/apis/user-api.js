@@ -72,7 +72,7 @@ const create = {
     failAction: validationUtils.validationErrHandler
   },
 
-  handler: function(request) {
+  handler: function (request) {
     return apiUtils.create(modelName, request.payload, User);
   }
 };
@@ -81,16 +81,16 @@ const getOne = {
 
   validate: validationUtils.getIdParamsValidation(),
 
-  handler: function(request) {
+  handler: function (request) {
     return apiUtils.findById(modelName, User, request.params.id);
   }
 };
 
 const getSomeById = {
 
-  handler: function(request) {
+  handler: function (request) {
     let query = request.query;
-    query = apiUtils.convertQueryString(query);
+    query = apiUtils.convertIdsQuery(query);
     let constraints;
     logger.info('Query: ', query);
     if (query.ids) {
@@ -116,7 +116,7 @@ const update = {
     failAction: validationUtils.validationErrHandler
   },
 
-  handler: function(request) {
+  handler: function (request) {
     return apiUtils.update(modelName, User, request.params.id, request.payload);
   }
 };
@@ -125,7 +125,7 @@ const deleteOne = {
 
   validate: validationUtils.getIdParamsValidation(),
 
-  handler: function(request) {
+  handler: function (request) {
     const constraints = {
       _id: request.params.id
     };
@@ -137,9 +137,9 @@ const deleteSomeById = {
 
   validate: validationUtils.getIdArrPayloadValidation(),
 
-  handler: function(request) {
+  handler: function (request) {
     let constraints;
-    let query = apiUtils.convertQueryString(request.query);
+    let query = apiUtils.convertIdsQuery(request.query);
     if (query.ids) {
       constraints = {
         _id: {$in: query.ids}
@@ -151,7 +151,7 @@ const deleteSomeById = {
 };
 
 
-const authenticateUser = async function(conditions, password, h) {
+const authenticateUser = async function (conditions, password, h) {
   const authResult = await authUtils.authenticate(modelName, User, conditions, password);
   if (!authResult.success) {
     return h.response(

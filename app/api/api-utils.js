@@ -177,7 +177,10 @@ const save = async function (toSave, modelName) {
 };
 
 
-const convertQueryString = function (query) {
+const convertIdsQuery = function (query) {
+  if (Array.isArray(query['ids[]'])) {
+    return {ids: [].concat(query['ids[]'])};
+  }
   let queryObject = {};
   const queryElements = _.toPairs(query);
 
@@ -220,4 +223,4 @@ exports.findById = findById;
 exports.findOne = findOne;
 exports.update = update;
 exports.delete = deleteEntry;
-exports.convertQueryString = convertQueryString;
+exports.convertIdsQuery = convertIdsQuery;

@@ -54,7 +54,7 @@ const getSomeById = {
 
   handler: function(request) {
     let query = request.query;
-    query = apiUtils.convertQueryString(query);
+    query = apiUtils.convertIdsQuery(query);
     let constraints;
     logger.info('Query: ' ,query);
     if (query.ids) {
@@ -103,7 +103,7 @@ const deleteSomeById = {
 
   handler: function(request) {
     let constraints;
-    let query = apiUtils.convertQueryString(request.query);
+    let query = apiUtils.convertIdsQuery(request.query);
     if (query.ids) {
       constraints = {
         _id: {$in: query.ids}
