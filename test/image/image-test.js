@@ -2,11 +2,11 @@
 
 const assert = require('chai').assert;
 const logger = require('simple-node-logger').createSimpleLogger();
-const fixtures = require('./image-fixtures-local');
+const fixtures = require('./image-fixtures');
 
 const CrudTester = require('../crud-tester');
-const userFixtures = require('../user/user-fixtures-local');
-const adminFixtures = require('../admin/admin-fixtures-local');
+const userFixtures = require('../user/user-fixtures');
+const adminFixtures = require('../admin/admin-fixtures');
 
 const RequestService = require('../request-service');
 
