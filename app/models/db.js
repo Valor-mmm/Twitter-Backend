@@ -29,7 +29,7 @@ dbConnection.on('disconnected', () => {
 });
 
 const seedDB = async function() {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' || process.env.SEED === 'seed') {
     const seeder = require('mongoose-seeder');
     const data = dbConfig.seedData;
 
